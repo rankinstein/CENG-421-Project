@@ -1,64 +1,22 @@
+
+%% Get the paths of all files
+% File names do not include extension. Each file name has an image (.jpg)
+% and its associated metadata (.xml)
 base_path = 'PKLot/PKLot/';
-
-%Specify lot: 1,2, or 3
-%Sample all weather
-%Sample all days
-%Randomly select 10% of each day
-
-lots = dir(base_path);
-lots = {lots.name};
-lots = lots(~strncmp(lots,'.',1));
-num_lots = max(size(lots));
-lot_path = char(strcat(base_path,lots(1),'/')); %depends on lots index number
-
-weather_path = {};
-weather = dir(lot_path);
-weather = {weather.name};
-weather = weather(~strncmp(weather,'.',1));
-num_weather = size(weather,2);
-for k=1:num_weather
-    weather_path = {weather_path{:} char(strcat(lot_path,weather(k),'/'))};
+if ~exist('file_set','var')
+    [ file_set, training_set ] = get_file_paths(base_path, 0.1);
 end
 
-day_path = {};
-for k=1:size(weather_path,2)
-    day = dir(weather_path{k});
-    day = {day.name};
-    day = day(~strncmp(day,'.',1));
-    num_days = size(day,2);
-    for j=1:num_days
-        day_path = {day_path{:} char(strcat(weather_path{k},day(j),'/'))};
-    end
-end
+% concat '.jpg' to get the image and '.xml' to get the metadata
+image_path = strcat(file_set{100},'.jpg');
+xml_path = strcat(file_set{100},'.xml');
 
-file_paths = {};
-training_paths = {};
-for k=1:size(day_path,2)
-    file_names = dir(day_path{k});
-    file_names = {file_names.name};
-    file_names = file_names(~strncmp(file_names,'.',1));
-
-    file_names = unique(cellfun(@(x) x(1:end-4), file_names, 'UniformOutput', false));
-    num_files = size(file_names,2);
-    l = 1:num_files;
-    l = randsample(l,floor(num_files/10)); % approximately 10% of data will be extracted for training
-    
-    for j=1:num_files % build a list of all files. note each name has a .jpg and .xml
-        file_paths = {file_paths{:} strcat(day_path{k},file_names{j})};
-        if any(j == l) % extract training files if matches the random 10%
-            training_paths = {training_paths{:} strcat(day_path{k},file_names{j})};
-        end
-    end
-end
-
-image_path = strcat(file_paths{300},'.jpg');
-xml_path = strcat(file_paths{300},'.xml');
-
+%% Display Images and Metadata
 image = imread(image_path);
 imshow(image);
 hold on;
 
-R = @(deg) [cosd(deg) -sind(deg); sind(deg) cosd(deg)];
+R = @(deg) [cosd(deg) -sind(deg); sind(deg) cosd(deg)]; % 2D rotation matrix
 
 s = readXML(xml_path);
 
