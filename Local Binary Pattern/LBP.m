@@ -6,9 +6,27 @@ function LBPu2 = LBP( neighbourhood_window )
     %center pixel of neighbourhood sliding window
     center_pixel = neighbourhood_window(round((m*n)/2));
     
+    %Radius of neibourhood_window (ASSUMES square neigbourhood matrix)
+    R = (m-1)/2;
+    
+    %Get circular index from square matrix 
+    PerimeterIndices = @(r, d) sub2ind([(r*2+1) (r*2+1)], round(r+1 + r*cosd(d)), round(r+1 + r*sind(d)));
+    
+    %Number of perimeter pixels.
+    perimeter = 2*m + 2*n - 4*R;
+    %Angle between neighbours
+    A = 360/perimeter;
+    
+    %Determine rotational indexing of neighbourhood window. 
+    %OPTIMIZATION:This is the same for all calls of the same window size
+    %               could perform this once prior to calling LBP
+    NB_pixels = zeros(1,perimeter);
+    for k = 1:perimeter
+        NB_pixels(k) = PerimeterIndices(R, A*k);
+    end
+    
     %row vector containing all neighbouring pixels
-    NB_pixels = reshape(neighbourhood_window, [1, m*n]);
-    NB_pixels(round((m*n)/2)) = [];
+    NB_pixels = neighbourhood_window(NB_pixels);
    
     %compare gray level values of center pixel with neighbouring pixels
     binary_pattern = bsxfun(@le, center_pixel, NB_pixels); 
