@@ -32,7 +32,7 @@ function LBPu2 = LBP( neighbourhood_window )
     binary_pattern = bsxfun(@le, center_pixel, NB_pixels); 
     
     %Keep uniform values (transition <= 2) and put others in single bin
-    if sum(diff(binary_pattern)~=0) <= 2
+    if sum([diff(binary_pattern) binary_pattern(1)-binary_pattern(end)]~=0) <= 2
         lbpu = binary_pattern;
         LBPu2 = bi2de(lbpu, 'left-msb');
     else
