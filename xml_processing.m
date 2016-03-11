@@ -26,7 +26,7 @@ hold on;
 
 % s contains all the meta data for the image
 % Order of Columns:
-%       Occupied, Center X, Center Y, Width, Height, Angle
+%       Spot Number, Occupied, Center X, Center Y, Width, Height, Angle
 s = readXML(xml_path);
 
 %% Example printing information from the metadata file
@@ -34,15 +34,15 @@ num_spaces = size(s,1);
 R = @(deg) [cosd(deg) -sind(deg); sind(deg) cosd(deg)]; % 2D rotation matrix
 
 for k = 1:num_spaces
-    plot(s(k,2),s(k,3),'b+');
-    C = s(k,2:3);
-    W = s(k,4)/2;
-    H = s(k,5)/2;
+    plot(s(k,3),s(k,4),'b+');
+    C = s(k,3:4);
+    W = s(k,5)/2;
+    H = s(k,6)/2;
     P(1,:) = [W H];
     P(2,:) = [W -H];
     P(3,:) = [-W H];
     P(4,:) = [-W -H];
-    Rs = (R(s(k,6))*P')';
+    Rs = (R(s(k,7))*P')';
     P = [Rs(:,1)+C(1) Rs(:,2)+C(2)];
     if mod(k,3) == 0
         plot(P(1,1),P(1,2),'g+');
@@ -63,8 +63,8 @@ for k = 1:num_spaces
 end
 
 %% Example of space segmentation for space k
-k = 25;
-im_rot = segment_space(image, s(k,2:6));
+k = 40;
+im_rot = segment_space(image, s(k,3:7));
 
 figure;
 imshow(im_rot);

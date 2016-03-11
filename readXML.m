@@ -4,7 +4,7 @@ function [ sp ] = readXML( file )
 %   matrix (whether it is occupied and the coordinates of its bounding
 %   rectangle).
 %   Order of Columns:
-%       Occupied, Center X, Center Y, Width, Height, Angle
+%       Spot Number, Occupied, Center X, Center Y, Width, Height, Angle
     addpath 'xml2struct';
     s = xml2struct(file);
     rmpath 'xml2struct';
@@ -14,10 +14,11 @@ function [ sp ] = readXML( file )
     
     num_spaces = max(size(spaces));
     
-    sp = zeros(num_spaces,6)-1;
+    sp = zeros(num_spaces,7)-1;
     
     for k = 1:num_spaces
        sp(k,:) = [ ...
+           k ...
            str2num(spaces{k}.Attributes.occupied) ...
            str2num(spaces{k}.rotatedRect.center.Attributes.x) ... 
            str2num(spaces{k}.rotatedRect.center.Attributes.y) ...
