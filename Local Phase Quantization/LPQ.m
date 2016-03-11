@@ -1,6 +1,13 @@
-function [ output_args ] = LPQ( image )
-%LPQ Summary of this function goes here
-%   Detailed explanation goes here
+function [ H ] = LPQ( image )
+%LPQ Performs Local Phase Quantization on the input image using a 7x7 mask
+%
+%   This is an implementation based on:
+%   Ojansivu, Ville, and Janne Heikkilä. "Blur insensitive texture 
+%   classification using local phase quantization." Image and signal 
+%   processing. Springer Berlin Heidelberg, 2008. 236-243.
+%
+%   de Almeida, Paulo RL, et al. "PKLot?A robust dataset for parking lot 
+%   classification." Expert Systems with Applications 42.11 (2015): 4937-4949.
 
     % Convert imput images to gray-scale and cast to a double
     image = rgb2gray(image);
@@ -8,29 +15,29 @@ function [ output_args ] = LPQ( image )
 
     % The convolution window will encompass a 7x7 neighbourhood, i.e.
     window_radius = 3;
-    % window defined in 1D. Convolution is separable.
+    % window defined in 1D because the convolution will be separable.
     x = -window_radius: window_radius;
-    % width of the window
-    n = 2*window_radius + 1;
+    % length of the window
+    n = length(x);
     
-    % As defined in the paper, the value of a = (diameter-1)/2
+    %% Construction of basis vector components for STFT
+    % As defined in the de Almeida paper, the value of a = (diameter-1)/2
     a = 1/window_radius;
 
-%     u1 = [a 0]';
-%     u2 = [0 a]';
-%     u3 = [a a]';
-%     u4 = [a -a]';
+	% Complex coefficients considered: u = [a 0] [0 a] [a a] [a -a]
+    % The basis vectors are defined by: exp( -1i*2*pi*u*X/n^2 ) for all X in
+    % the window. This is separated into components (basis vectors): 
+    %           (w1 x w0) (w0 x w1) (w1 x w1) (w1 x w2)
     
     % u component = 0, phi becomes one because u1'*x = 0 thus e^0 = 1
     w0 = a*x*0+1;
-    
     % u component = a
     w1 = exp(-1i*2*pi*a*x/n);
-    
-    % u component = -a. the conjugate of w1
+    % u component = -a
     w2 = exp(1i*2*pi*a*x/n);
 
-    
+    %% Apply STFT
+    % Applied by column then row using the components of the basis vectors 
     % .' preserves complex numbers on transposition
     O1 = conv2(conv2(image, w0.', 'same'), w1, 'same');
     O2 = conv2(conv2(image, w1.', 'same'), w0, 'same');
@@ -46,18 +53,23 @@ function [ output_args ] = LPQ( image )
     O4re = real(O4(:));
     O4im = imag(O4(:));
     
-    Fc = [O1re O1im O2re O2im O3re O3im O4re O4im];
+    % Fx is the feature vector but the values are correlated
+    Fx = [O1re O2re O3re O4re O1im O2im O3im O4im];
     
-    rho = 0.95;
-    [X Y] = meshgrid(1:n^2,1:n^2);
+    %% Construction of Whitening Matrix to de-correlate data
+    sig = 0.9;
+    [X, Y] = meshgrid(1:n^2,1:n^2);
     pow = abs(X-Y);
-    C = rho.^pow;
+    % covariance matrix
+    C = sig.^pow;
     
+    % explicit calculation of basis vectors
     wu1 = w0.' * w1;
     wu2 = w1.' * w0;
     wu3 = w1.' * w1;
     wu4 = w2.' * w1;
     
+    % separation into real and imaginary compnents
     wu1re = real(wu1);
     wu1im = imag(wu1);
     wu2re = real(wu2);
@@ -67,16 +79,13 @@ function [ output_args ] = LPQ( image )
     wu4re = real(wu4);
     wu4im = imag(wu4);
     
-    W = [wu1re(:) wu1im(:) wu2re(:) wu2im(:) wu3re(:) wu3im(:) wu4re(:) wu4im(:)];
-    
+    W = [wu1re(:) wu2re(:) wu3re(:) wu4re(:) wu1im(:) wu2im(:) wu3im(:) wu4im(:)];
     D = W.'*C*W;
-    
     [~,~,V] = svd(D);
+    % Apply whitening transformation to obtain de-correlated feature vector
+    Gx = V.' * Fx.';
     
-    Gx = V.' * Fc.';
+    %% Convert feature vectors to decimal numbers
     H = bi2de(Gx' >= 0);
-    histogram(H,256,'Normalization', 'probability');
-    output_args = H;
-
 end
 
