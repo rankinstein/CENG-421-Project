@@ -3,8 +3,13 @@ function [ file_paths,training_paths ] = get_file_paths( base_path, percent_trai
 %                   as well as a list of training files
 %   Detailed explanation goes here
     
-    rng(1); % seed the random number generator so test data is consistent
+    % seed the random number generator so test data is consistent
+    rng(1);
     
+    % These are files specifically removed from consideration because they
+    % are incomplete. i.e. the image exists but the metadata is missing
+    file_blacklist = {'../PKLot/PKLot/PUCPR/Sunny/2012-11-06/2012-11-06_18_48_46'};
+
     %Specify lot: 1,2, or 3
     %Sample all weather
     %Sample all days
@@ -55,6 +60,10 @@ function [ file_paths,training_paths ] = get_file_paths( base_path, percent_trai
             end
         end
     end
+    
+    % filter out the blacklisted files
+    file_paths = setdiff(file_paths,file_blacklist);
+    training_paths = setdiff(training_paths,file_blacklist);
 
 end
 

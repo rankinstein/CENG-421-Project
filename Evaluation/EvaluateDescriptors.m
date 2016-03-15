@@ -7,12 +7,21 @@
 % database.
 close all;
 
+%% Open and separate image and metadata files
+if ~exist('file_set','var')
+    [ file_set, training_set, test_set ] = GetFileSets(0.01);
+end
+training_data = GetImagesAndData(training_set);
+
 %%
 % Load spot segments into a 3 arrays (2 for training, 1 for evaluation)
 
 % Array of only occupied spots (For training)
-
+training_data_occupied = training_data([training_data{:,2}] == 1,:);
 % Array of empty spots (For training)
+training_data_empty = training_data([training_data{:,2}] == 0,:);
+% Array of bad spots missing data (For reference)
+training_data_bad = training_data([training_data{:,2}] == -1,:);
 
 % Array of mixed number of occupied and unoccupied (must know the number of
 % occupied spots)
