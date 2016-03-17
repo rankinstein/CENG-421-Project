@@ -27,6 +27,9 @@ training_data_bad = training_data([training_data{:,2}] == -1,:);
 % occupied spots)
 
 %%
+
+%Get feature vectors for each training set and Pattern
+
 %Train Classifier
 
 %%  
