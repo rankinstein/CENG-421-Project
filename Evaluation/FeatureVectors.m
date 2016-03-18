@@ -6,16 +6,17 @@ function [ feature_vectors ] = FeatureVectors( imgs, method )
 %                     0 Local Binary Pattern
 %                     1 Local Phase Quantization
 %Ouput
-% feature_vectors   - 3-Dimensional array continaining the feature vectors
+% feature_vectors   - Array continaining the feature vectors
 %                     for each image in the cell array using the specified 
 %                     method
-
+    addpath '../Local Binary Pattern'
     %iterate through each array cell and determine feature vector
-    for i = 1:length(imgs)
+    parfor i = 1:length(imgs)
+        i
         if method == 0
             %Get feature vector of image using Local Binary Pattern
             descriptor = LocalBinaryPattern(imgs{i}, [3, 3]);
-            feature_vectors(:,:,i) = histcounts(features);
+            feature_vectors(i,:) = histcounts(descriptor,257,'Normalization','probability')';
 
         elseif method == 1
             %Get feature vector of image using Local Phase Quantization

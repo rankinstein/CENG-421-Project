@@ -36,8 +36,8 @@ function LBPu2 = LBP( neighbourhood_window )
         lbpu = binary_pattern;
         LBPu2 = bi2de(lbpu, 'left-msb');
     else
-        %put nonuniform LBP into a single bin (decimal value 257)
-        LBPu2 = 2^(P)+1;
+        %put nonuniform LBP into a single bin (decimal value 256)
+        LBPu2 = 2^(P);
     end
 end
 
