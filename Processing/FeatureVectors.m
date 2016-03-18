@@ -9,10 +9,9 @@ function [ feature_vectors ] = FeatureVectors( imgs, method )
 % feature_vectors   - Array continaining the feature vectors
 %                     for each image in the cell array using the specified 
 %                     method
-    addpath '../Local Binary Pattern'
+
     %iterate through each array cell and determine feature vector
     parfor i = 1:length(imgs)
-        i
         if method == 0
             %Get feature vector of image using Local Binary Pattern
             descriptor = LocalBinaryPattern(imgs{i}, [3, 3]);

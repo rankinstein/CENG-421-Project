@@ -2,8 +2,6 @@ function [ image_data_matrix ] = GetImagesAndData( file_set )
 %GETIMAGEANDDATA Summary of this function goes here
 %   Detailed explanation goes here
 
-    addpath './..';
-    addpath './../xml2struct';
     file_set_size = length(file_set);
     spots_per_file = 100;
     image_data_matrix = cell(file_set_size*spots_per_file,3);
@@ -33,7 +31,5 @@ function [ image_data_matrix ] = GetImagesAndData( file_set )
     
     %sort rows by space number (column 1)
     image_data_matrix = sortrows(image_data_matrix,1);
-
-
 end
 
