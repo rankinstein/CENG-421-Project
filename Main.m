@@ -11,6 +11,7 @@ close all;
 if ~exist('file_set','var')
     [ file_set, training_set, test_set ] = GetFileSets(0.01);
 end
+%test_data = GetImagesAndData(randsample(test_set, 26));
 training_data = GetImagesAndData(training_set);
 
 %%
