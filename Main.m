@@ -68,7 +68,7 @@ if ~exist('LBP_test_features_occupied','var')
     LBP_test_features_occupied = FeatureVectors(test_data_occupied(:,3),'LBP');
 end
 if ~exist('LBP_test_features_empty','var')
-    LBP_test_features_empty = FeatureVectors(test_data_occupied(:,3),'LBP');
+    LBP_test_features_empty = FeatureVectors(test_data_empty(:,3),'LBP');
 end
 disp('Creating Local Phase Quantization Test Vectors Data');
 if ~exist('LPQ_test_features_occupied','var')
