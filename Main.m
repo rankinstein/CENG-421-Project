@@ -14,11 +14,14 @@ addpath(genpath('File Extraction'),'./Processing', './Local Phase Quantization',
 if ~exist('file_set','var')
     [ file_set, training_set, test_set ] = GetFileSets(0.01);
 end
-%test_data = GetImagesAndData(randsample(test_set, 26));
+
+% Select a set of images from the test files
+test_data = GetImagesAndData(randsample(test_set, 50));
+
+% Segment the images for the training files
 training_data = GetImagesAndData(training_set);
 
 %%
-% Load spot segments into a 3 arrays (2 for training, 1 for evaluation)
 
 % Array of only occupied spots (For training)
 training_data_occupied = training_data([training_data{:,2}] == 1,:);
@@ -27,23 +30,47 @@ training_data_empty = training_data([training_data{:,2}] == 0,:);
 % Array of bad spots missing data (For reference)
 training_data_bad = training_data([training_data{:,2}] == -1,:);
 
-% Array of mixed number of occupied and unoccupied (must know the number of
-% occupied spots)
+
+% Array of only occupied spots (For testing)
+test_data_occupied = test_data([test_data{:,2}] == 1,:);
+% Array of empty spots (For testing)
+test_data_empty = test_data([test_data{:,2}] == 0,:);
+% Array of bad spots missing data (For reference)
+test_data_bad = test_data([test_data{:,2}] == -1,:);
+
 
 %%
 %Get feature vectors for each training set and Pattern
-if ~exist('features_occupied','var')
-    features_occupied = FeatureVectors(training_data_occupied(:,3),0);
+if ~exist('LBP_features_occupied','var')
+    LBP_features_occupied = FeatureVectors(training_data_occupied(:,3),'LBP');
 end
-if ~exist('features_empty','var')
-    features_empty = FeatureVectors(training_data_empty(:,3),0);
+if ~exist('LBP_features_empty','var')
+    LBP_features_empty = FeatureVectors(training_data_empty(:,3),'LBP');
 end
-
+if ~exist('LPQ_features_occupied','var')
+    LPQ_features_occupied = FeatureVectors(training_data_occupied(:,3),'LPQ');
+end
+if ~exist('LPQ_features_empty','var')
+    LPQ_features_empty = FeatureVectors(training_data_empty(:,3),'LPQ');
+end
 
 %Use Fisher Discriminant Analysis to reduce dimensions between empty and occupied
-FisherDiscriminant(features_empty, features_occupied);
+[LBP_db, LBP_V] = FisherDiscriminant(LBP_features_empty, LBP_features_occupied);
+[LPQ_db, LPQ_V] = FisherDiscriminant(LPQ_features_empty, LPQ_features_occupied);
 
-%Train Classifier
+%Get feature vectors for each test set and Pattern
+% if ~exist('LBP_test_features_occupied','var')
+%     LBP_test_features_occupied = FeatureVectors(test_data_occupied(:,3),'LBP');
+% end
+% if ~exist('LBP_test_features_empty','var')
+%     LBP_test_features_empty = FeatureVectors(test_data_occupied(:,3),'LBP');
+% end
+if ~exist('LPQ_test_features_occupied','var')
+    LPQ_test_features_occupied = FeatureVectors(test_data_occupied(:,3),'LPQ');
+end
+if ~exist('LPQ_test_features_empty','var')
+    LPQ_test_features_empty = FeatureVectors(test_data_empty(:,3),'LPQ');
+end
 
 
 %%  

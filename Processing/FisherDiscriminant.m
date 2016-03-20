@@ -1,4 +1,4 @@
-function FisherDiscriminant( features_vector1, features_vector2 )
+function [ decision_boundary, V ] = FisherDiscriminant( features_vector1, features_vector2 )
     % Use Fisher Discriminant Analysis to reduce dimensions between empty and occupied
     % Construct Sb, the scatter matrix for the distance between means
     Sb = (mean(features_vector2) - mean(features_vector1))'*(mean(features_vector2) - mean(features_vector1));
@@ -8,7 +8,7 @@ function FisherDiscriminant( features_vector1, features_vector2 )
     % Goal is to maximize Sb and minimize Sw. Which is reduced to the
     % dominant eigenvector associated inv(Sw)*Sb. Note couldn't calculate true
     % inverse. V becomes the vector to project all the data on to.
-    [V, D] = eigs(pinv(Sw)*Sb,1);
+    [V, ~] = eigs(pinv(Sw)*Sb,1);
 
     % correct V being calculated in the opposite direction
     if sum(V) > 0
@@ -29,25 +29,31 @@ function FisherDiscriminant( features_vector1, features_vector2 )
     h_em = fitdist(p_em,'Normal');
 
     % decision boundary where the two distributions are equal
-    db = fzero(@(x) normpdf(x, h_oc.mu, h_oc.sigma) - normpdf(x, h_em.mu, h_em.sigma), 0);
+    decision_boundary = fzero(@(x) normpdf(x, h_oc.mu, h_oc.sigma) - normpdf(x, h_em.mu, h_em.sigma), (h_oc.mu+h_em.mu)/2);
 
     % display the decision boundary
-    x=[db,db];
-    y=[0,200];
+    x=[decision_boundary,decision_boundary];
+    y=ylim;
     plot(x,y,'r-.');
     legend(sprintf('Occupied (total: %d)', ...
         length(p_oc)), sprintf('Empty (total: %d)', ...
-        length(p_em)), sprintf('Decision Boundary (x = %.4f)', db));
+        length(p_em)), sprintf('Decision Boundary (x = %.4f)', decision_boundary));
 
-    % Type 1 Error: False Positives - Empty when classified as occupied
-    t1_error = sum(p_em > db);
+    if h_oc.mu > h_em.mu
+        % Type 1 Error: False Positives - Empty when classified as occupied
+        t1_error = sum(p_em > decision_boundary);
 
-    % Type 2 Error: False Negatives - Occupied when classified as empty
-    t2_error = sum(p_oc < db);
+        % Type 2 Error: False Negatives - Occupied when classified as empty
+        t2_error = sum(p_oc < decision_boundary);
+    else
+        % Type 1 Error: False Positives - Empty when classified as occupied
+        t1_error = sum(p_em < decision_boundary);
+
+        % Type 2 Error: False Negatives - Occupied when classified as empty
+        t2_error = sum(p_oc > decision_boundary);  
+    end
 
     title(sprintf('Training Data Analysis\nT1 Error: %.1f%%, T2 Error: %.1f%%', 100*t1_error/length(p_em), 100*t2_error/length(p_oc)));
-
-
 
 end
 

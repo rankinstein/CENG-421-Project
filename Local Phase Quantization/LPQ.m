@@ -10,7 +10,9 @@ function [ H ] = LPQ( image )
 %   classification." Expert Systems with Applications 42.11 (2015): 4937-4949.
 
     % Convert imput images to gray-scale and cast to a double
-    image = rgb2gray(image);
+    if size(image,3) == 3
+        image = rgb2gray(image);
+    end
     image = double(image);
 
     % The convolution window will encompass a 7x7 neighbourhood, i.e.
