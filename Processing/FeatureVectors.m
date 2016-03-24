@@ -12,7 +12,6 @@ function [ feature_vectors ] = FeatureVectors( imgs, method )
 
     %iterate through each array cell and determine feature vector
     parfor i = 1:length(imgs)
-        disp(i);
         if strcmp(method, 'LBP')
             %Get feature vector of image using Local Binary Pattern
             descriptor = LocalBinaryPattern(imgs{i}, [3, 3]);

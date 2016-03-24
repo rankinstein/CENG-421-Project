@@ -1,4 +1,4 @@
-function [ decision_boundary, V ] = FisherDiscriminant( features_vector1, features_vector2 )
+function [ decision_boundary, V ] = FisherDiscriminant( features_vector1, features_vector2, str)
     % Use Fisher Discriminant Analysis to reduce dimensions between empty and occupied
     % Construct Sb, the scatter matrix for the distance between means
     Sb = (mean(features_vector2) - mean(features_vector1))'*(mean(features_vector2) - mean(features_vector1));
@@ -52,8 +52,8 @@ function [ decision_boundary, V ] = FisherDiscriminant( features_vector1, featur
         % Type 2 Error: False Negatives - Occupied when classified as empty
         t2_error = sum(p_oc > decision_boundary);  
     end
-
-    title(sprintf('Training Data Analysis\nT1 Error: %.1f%%, T2 Error: %.1f%%', 100*t1_error/length(p_em), 100*t2_error/length(p_oc)));
+    str1 = sprintf('%s Training Data T1 Error: %.1f%%, T2 Error: %.1f%%', str, 100*t1_error/length(p_em), 100*t2_error/length(p_oc));
+    title(str);
 
 end
 

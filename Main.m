@@ -16,12 +16,13 @@ if ~exist('file_set','var')
 end
 
 % Select a set of images from the test files
-test_data = GetImagesAndData(randsample(test_set, 26));
+test_data = GetImagesAndData(randsample(test_set, 50));
 
 % Segment the images for the training files
 training_data = GetImagesAndData(training_set);
 
 %%
+%Generate Training Data and Test Data
 disp('Generating Training Data');
 % Array of only occupied spots (For training)
 training_data_occupied = training_data([training_data{:,2}] == 1,:);
@@ -40,6 +41,7 @@ test_data_bad = test_data([test_data{:,2}] == -1,:);
 
 
 %%
+%Create Feature Vectors for Training Sets
 disp('Creating Local Binary Pattern Training Vectors Data');
 %Get feature vectors for each training set and Pattern
 if ~exist('LBP_features_occupied','var')
@@ -56,12 +58,15 @@ end
 if ~exist('LPQ_features_empty','var')
     LPQ_features_empty = FeatureVectors(training_data_empty(:,3),'LPQ');
 end
+
 disp('Applying Fisher Discriminat Analysis on LBP and LPQ Training Vectors');
 %Use Fisher Discriminant Analysis to reduce dimensions between empty and occupied
-[LBP_db, LBP_V] = FisherDiscriminant(LBP_features_empty, LBP_features_occupied);
-[LPQ_db, LPQ_V] = FisherDiscriminant(LPQ_features_empty, LPQ_features_occupied);
+[LBP_db, LBP_V] = FisherDiscriminant(LBP_features_empty, LBP_features_occupied, 'LBP');
+[LPQ_db, LPQ_V] = FisherDiscriminant(LPQ_features_empty, LPQ_features_occupied, 'LPQ');
 
 
+%%
+%Create Feature Vectors for Test Data
 disp('Creating Local Binary Pattern Test Vectors Data');
 %Get feature vectors for each test set and Pattern
 if ~exist('LBP_test_features_occupied','var')
@@ -78,19 +83,8 @@ if ~exist('LPQ_test_features_empty','var')
     LPQ_test_features_empty = FeatureVectors(test_data_empty(:,3),'LPQ');
 end
 
-disp('Applying Fisher Discriminat Analysis on LBP and LPQ Test Vectors');
-%Use Fisher Discriminant Analysis to reduce dimensions between empty and occupied
-[LBP_db, LBP_V] = FisherDiscriminant(LBP_test_features_empty, LBP_test_features_occupied);
-[LPQ_db, LPQ_V] = FisherDiscriminant(LPQ_test_features_empty, LPQ_test_features_occupied);
-
-%%  
-% Evaluate Local Binary Pattern Descriptor
-% LBP_detections = DetermineOccupancy(o_imgs, 0, classifier);
-% LBP_false_detections = abs(num_occupied - LBP_detections);
-% LBP_rel_error = (LBP_detections - num_occupied)/ num_occupied;
-% 
-% %%
-% % Evaluate Local Phase Quantization Descriptor
-% LPQ_detections = DetermineOccupancy(o_imgs, 1, classifier);
-% LPQ_false_detections = abs(num_occupied - LPQ_detections);
-% LPQ_rel_error = (LPQ_detections - num_occupied)/ num_occupied;
+%%
+%Evaluate the Local Binary Pattern and Local Phase Quantization Descriptors
+disp('Evaluating LBP and LPQ Test Vectors');
+Evaluate(LBP_test_features_occupied, LBP_test_features_empty, LBP_V, LBP_db, 'LBP');
+Evaluate(LPQ_test_features_occupied, LPQ_test_features_empty, LPQ_V, LPQ_db, 'LPQ')
