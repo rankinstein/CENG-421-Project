@@ -86,5 +86,5 @@ end
 %%
 %Evaluate the Local Binary Pattern and Local Phase Quantization Descriptors
 disp('Evaluating LBP and LPQ Test Vectors');
-Evaluate(LBP_test_features_occupied, LBP_test_features_empty, LBP_V, LBP_db, 'LBP');
-Evaluate(LPQ_test_features_occupied, LPQ_test_features_empty, LPQ_V, LPQ_db, 'LPQ')
+c_mat_LBP = Evaluate(LBP_test_features_empty, LBP_test_features_occupied, LBP_V, LBP_db, 'LBP')
+c_mat_LPQ = Evaluate(LPQ_test_features_empty, LPQ_test_features_occupied, LPQ_V, LPQ_db, 'LPQ')

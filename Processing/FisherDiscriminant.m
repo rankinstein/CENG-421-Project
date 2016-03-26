@@ -53,7 +53,7 @@ function [ decision_boundary, V ] = FisherDiscriminant( features_vector1, featur
         t2_error = sum(p_oc > decision_boundary);  
     end
     str1 = sprintf('%s Training Data T1 Error: %.1f%%, T2 Error: %.1f%%', str, 100*t1_error/length(p_em), 100*t2_error/length(p_oc));
-    title(str);
+    title(str1);
 
 end
 
