@@ -6,6 +6,7 @@
 % Note all the test images used are from a open source parking lot image
 % database.
 close all;
+clear all;
 
 %add relevant file paths
 addpath(genpath('File Extraction'),'./Processing', './Local Phase Quantization', './Local Binary Pattern');
@@ -42,7 +43,7 @@ test_data_bad = test_data([test_data{:,2}] == -1,:);
 
 %%
 %Create Feature Vectors for Training Sets
-disp('Creating Local Binary Pattern Training Vectors Data');
+disp('Creating Local Binary Pattern Training Vectors');
 %Get feature vectors for each training set and Pattern
 if ~exist('LBP_features_occupied','var')
     LBP_features_occupied = FeatureVectors(training_data_occupied(:,3),'LBP');
@@ -51,7 +52,7 @@ if ~exist('LBP_features_empty','var')
     LBP_features_empty = FeatureVectors(training_data_empty(:,3),'LBP');
 end
 
-disp('Creating Local Phase Quantization Training Vectors Data');
+disp('Creating Local Phase Quantization Training Vectors');
 if ~exist('LPQ_features_occupied','var')
     LPQ_features_occupied = FeatureVectors(training_data_occupied(:,3),'LPQ');
 end
@@ -67,7 +68,7 @@ disp('Applying Fisher Discriminat Analysis on LBP and LPQ Training Vectors');
 
 %%
 %Create Feature Vectors for Test Data
-disp('Creating Local Binary Pattern Test Vectors Data');
+disp('Creating Local Binary Pattern Test Vectors');
 %Get feature vectors for each test set and Pattern
 if ~exist('LBP_test_features_occupied','var')
     LBP_test_features_occupied = FeatureVectors(test_data_occupied(:,3),'LBP');
@@ -75,7 +76,7 @@ end
 if ~exist('LBP_test_features_empty','var')
     LBP_test_features_empty = FeatureVectors(test_data_empty(:,3),'LBP');
 end
-disp('Creating Local Phase Quantization Test Vectors Data');
+disp('Creating Local Phase Quantization Test Vectors');
 if ~exist('LPQ_test_features_occupied','var')
     LPQ_test_features_occupied = FeatureVectors(test_data_occupied(:,3),'LPQ');
 end

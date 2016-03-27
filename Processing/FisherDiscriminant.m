@@ -16,17 +16,17 @@ function [ decision_boundary, V ] = FisherDiscriminant( features_vector1, featur
     end
 
     % Project the empty and occupied data sets on the FDA vector V.
-    p_em = features_vector1*V;
-    p_oc = features_vector2*V;
+    p_empty = features_vector1*V;
+    p_occupied = features_vector2*V;
 
     figure;
     hold on;
-    histogram(p_oc);
-    histogram(p_em);
+    histogram(p_occupied);
+    histogram(p_empty);
 
     % Fit a gaussian distribution or the empty and occupied data
-    h_oc = fitdist(p_oc,'Normal');
-    h_em = fitdist(p_em,'Normal');
+    h_oc = fitdist(p_occupied,'Normal');
+    h_em = fitdist(p_empty,'Normal');
 
     % decision boundary where the two distributions are equal
     decision_boundary = fzero(@(x) normpdf(x, h_oc.mu, h_oc.sigma) - normpdf(x, h_em.mu, h_em.sigma), (h_oc.mu+h_em.mu)/2);
@@ -36,23 +36,30 @@ function [ decision_boundary, V ] = FisherDiscriminant( features_vector1, featur
     y=ylim;
     plot(x,y,'r-.');
     legend(sprintf('Occupied (total: %d)', ...
-        length(p_oc)), sprintf('Empty (total: %d)', ...
-        length(p_em)), sprintf('Decision Boundary (x = %.4f)', decision_boundary));
+        length(p_occupied)), sprintf('Empty (total: %d)', ...
+        length(p_empty)), sprintf('Decision Boundary (x = %.4f)', decision_boundary));
 
     if h_oc.mu > h_em.mu
         % Type 1 Error: False Positives - Empty when classified as occupied
-        t1_error = sum(p_em > decision_boundary);
+        FP = sum(p_empty > decision_boundary)/length(p_empty)*100;
 
         % Type 2 Error: False Negatives - Occupied when classified as empty
-        t2_error = sum(p_oc < decision_boundary);
+        FN = sum(p_occupied < decision_boundary)/length(p_occupied)*100;
     else
         % Type 1 Error: False Positives - Empty when classified as occupied
-        t1_error = sum(p_em < decision_boundary);
+        FP = sum(p_empty < decision_boundary)/length(p_empty)*100;
 
         % Type 2 Error: False Negatives - Occupied when classified as empty
-        t2_error = sum(p_oc > decision_boundary);  
+        FN = sum(p_occupied > decision_boundary)/length(p_occupied)*100;  
     end
-    str1 = sprintf('%s Training Data T1 Error: %.1f%%, T2 Error: %.1f%%', str, 100*t1_error/length(p_em), 100*t2_error/length(p_oc));
+    
+    
+    TP = sum(p_occupied < decision_boundary)/length(p_occupied)*100;
+    TN = sum(p_empty > decision_boundary)/length(p_empty)*100;
+
+    
+    Overall_Error = (FP + FN)/ (TP + TN + FP + FN) * 100;
+    str1 = sprintf('%s Training Data TP Error: %.2f%%, FP Error: %.2f%%, Overall Error: %.2f%%', str, TP, FP, Overall_Error);
     title(str1);
 
 end
