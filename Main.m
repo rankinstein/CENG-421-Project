@@ -89,3 +89,6 @@ end
 disp('Evaluating LBP and LPQ Test Vectors');
 c_mat_LBP = Evaluate(LBP_test_features_empty, LBP_test_features_occupied, LBP_V, LBP_db, 'LBP')
 c_mat_LPQ = Evaluate(LPQ_test_features_empty, LPQ_test_features_occupied, LPQ_V, LPQ_db, 'LPQ')
+
+
+

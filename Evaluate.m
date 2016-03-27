@@ -31,7 +31,7 @@ function confusion_matrix = Evaluate( feature_vector1,feature_vector2, p_vector,
         FP = sum(p_empty < decision_boundary)/length(p_empty)*100;
 
         % Type 2 Error: False Negatives - Occupied when classified as empty
-        FN = sum(p_occupied > decision_boundary)/length(p_occupied);  
+        FN = sum(p_occupied > decision_boundary)/length(p_occupied)*100;  
     end
     TP = sum(p_occupied < decision_boundary)/length(p_occupied)*100;
     TN = sum(p_empty > decision_boundary)/length(p_empty)*100;
@@ -41,6 +41,7 @@ function confusion_matrix = Evaluate( feature_vector1,feature_vector2, p_vector,
     str1 = sprintf('%s Test Data TP Error: %.1f%%, FP Error: %.1f%%, Overall Error: %.2f%%', str, TP, FP, Overall_Error);
     title(str1);
 
-    confusion_matrix = [TP FN; FP TN];
+    c = [TP FN; FP TN];
+    confusion_matrix = array2table(c, 'RowNames', {'occupied' 'empty'}, 'VariableNames', {'occupied', 'empty'});
 end
 
