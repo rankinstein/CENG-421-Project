@@ -25,6 +25,8 @@ addpath(genpath('File Extraction'),'./Processing', './Local Phase Quantization',
 % training_data = GetImagesAndData(training_set);
 
 %% Image set integration: Open the files contained in test_set and training_set
+disp('Segmenting test and training files');
+
 test_names = dir('test_set');
 test_names = {test_names.name};
 test_names = test_names(~strncmp(test_names,'.',1));
