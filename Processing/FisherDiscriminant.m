@@ -59,7 +59,7 @@ function [ decision_boundary, V ] = FisherDiscriminant( features_vector1, featur
 
     
     Overall_Error = (FP + FN)/ (TP + TN + FP + FN) * 100;
-    str1 = sprintf('%s Training Data TP Error: %.2f%%, FP Error: %.2f%%, Overall Error: %.2f%%', str, TP, FP, Overall_Error);
+    str1 = sprintf('%s Training Data Overall Error: %.2f%%', str, Overall_Error);
     title(str1);
 
 end

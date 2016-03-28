@@ -1,5 +1,5 @@
 function [ H ] = LPQ( image )
-%LPQ Performs Local Phase Quantization on the input image using a 7x7 mask
+%% LPQ Performs Local Phase Quantization on the input image using a 7x7 mask
 %
 %   This is an implementation based on:
 %   Ojansivu, Ville, and Janne Heikkilä. "Blur insensitive texture 

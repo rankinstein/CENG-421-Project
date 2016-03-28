@@ -1,6 +1,15 @@
 function confusion_matrix = Evaluate( feature_vector1,feature_vector2, p_vector, decision_boundary, str )
-    %UNTITLED Summary of this function goes here
-    %   Detailed explanation goes here
+    %% Evaluate
+    % Evaluates a given results from a classfieer
+    % Input Parameters
+    % feature vector1               - feature vector of empty parking spots
+    % feature vector2               - feature vector of occupied parking spots
+    % p_vector                      - projection vector
+    % decision_boundary             - decision boundary 
+    % str                           - string used from title of plots
+    %Ouput
+    % confusion matrix              -  confusion matrix 
+
     p_empty = feature_vector1 * p_vector;
     p_occupied = feature_vector2 * p_vector;
     figure;
@@ -32,15 +41,17 @@ function confusion_matrix = Evaluate( feature_vector1,feature_vector2, p_vector,
 
         % Type 2 Error: False Negatives - Occupied when classified as empty
         FN = sum(p_occupied > decision_boundary);  
-    end
+   end
+    %compute the True positve and true negatives
     TP = sum(p_occupied < decision_boundary);
     TN = sum(p_empty > decision_boundary);
 
-    
+    %Compute the overall error so we can compare results with paper
     Overall_Error = (FP + FN)/ (TP + TN + FP + FN) * 100;
     str1 = sprintf('%s Test Overall Error: %.2f%%', str, Overall_Error);
     title(str1);
-
+    
+    %construct confusion matrix
     c = [TP FN; FP TN];
     confusion_matrix = array2table(c, 'RowNames', {'occupied' 'empty'}, 'VariableNames', {'occupied', 'empty'});
 end

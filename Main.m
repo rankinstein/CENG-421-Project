@@ -1,4 +1,4 @@
-%SUMMARY
+%% Main
 % This script is used to evalaute detection results of the following
 % Textural Descriptors:
 %       - Local Binary Patterns
@@ -16,13 +16,12 @@ if ~exist('file_set','var')
 end
 
 % Select a set of images from the test files
-test_data = GetImagesAndData(randsample(test_set, 100));
+test_data = GetImagesAndData(randsample(test_set, 50));
 
 % Segment the images for the training files
 training_data = GetImagesAndData(training_set);
 
-%%
-%Generate Training Data and Test Data
+%% Generate Training Data and Test Data
 disp('Generating Training Data');
 % Array of only occupied spots (For training)
 training_data_occupied = training_data([training_data{:,2}] == 1,:);
@@ -40,8 +39,7 @@ test_data_empty = test_data([test_data{:,2}] == 0,:);
 test_data_bad = test_data([test_data{:,2}] == -1,:);
 
 
-%%
-%Create Feature Vectors for Training Sets
+%% Create Feature Vectors for Training Sets and Train Classifier
 disp('Creating Local Binary Pattern Training Vectors');
 %Get feature vectors for each training set and Pattern
 if ~exist('LBP_features_occupied','var')
@@ -65,8 +63,7 @@ disp('Applying Fisher Discriminat Analysis on LBP and LPQ Training Vectors');
 [LPQ_db, LPQ_V] = FisherDiscriminant(LPQ_features_empty, LPQ_features_occupied, 'LPQ');
 
 
-%%
-%Create Feature Vectors for Test Data
+%% Create Feature Vectors for Test Data
 disp('Creating Local Binary Pattern Test Vectors');
 %Get feature vectors for each test set and Pattern
 if ~exist('LBP_test_features_occupied','var')
@@ -83,8 +80,7 @@ if ~exist('LPQ_test_features_empty','var')
     LPQ_test_features_empty = FeatureVectors(test_data_empty(:,3),'LPQ');
 end
 
-%%
-%Evaluate the Local Binary Pattern and Local Phase Quantization Descriptors
+%% Evaluate the Local Binary Pattern and Local Phase Quantization Descriptors
 disp('Evaluating LBP and LPQ Test Vectors');
 c_mat_LBP = Evaluate(LBP_test_features_empty, LBP_test_features_occupied, LBP_V, LBP_db, 'LBP')
 c_mat_LPQ = Evaluate(LPQ_test_features_empty, LPQ_test_features_occupied, LPQ_V, LPQ_db, 'LPQ')
