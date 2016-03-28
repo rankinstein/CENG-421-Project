@@ -8,6 +8,10 @@ function [ H ] = LPQ( image )
 %
 %   de Almeida, Paulo RL, et al. "PKLot?A robust dataset for parking lot 
 %   classification." Expert Systems with Applications 42.11 (2015): 4937-4949.
+%
+%   The code is adaped from the LPQ implementation lpq_basic.m by 
+%   Ojansivu and Heikkilä. 
+%   Available at: http://www.cse.oulu.fi/CMV/Downloads/LPQMatlab
 
     % Convert imput images to gray-scale and cast to a double
     if size(image,3) == 3
@@ -45,7 +49,8 @@ function [ H ] = LPQ( image )
     O2 = conv2(conv2(image, w1.', 'same'), w0, 'same');
     O3 = conv2(conv2(image, w1.', 'same'), w1, 'same');
     O4 = conv2(conv2(image, w2.', 'same'), w1, 'same');
-
+    
+    % isolate the real and imaginary components
     O1re = real(O1(:));
     O1im = imag(O1(:));
     O2re = real(O2(:));

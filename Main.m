@@ -11,15 +11,37 @@ close all;
 addpath(genpath('File Extraction'),'./Processing', './Local Phase Quantization', './Local Binary Pattern');
 
 %% Open and separate image and metadata files
-if ~exist('file_set','var')
-    [ file_set, training_set, test_set ] = GetFileSets(0.01);
+% %This section is commented out for the puposes of submitting a sample of
+% % the image database. This commented-out code walks through the 4.6gb
+% % database and selects a random sample of test and training images/metadata
+% if ~exist('file_set','var')
+%     [ file_set, training_set, test_set ] = GetFileSets(0.01);
+% end
+% 
+% % Select a set of images from the test files
+% test_data = GetImagesAndData(randsample(test_set, 100));
+% 
+% % Segment the images for the training files
+% training_data = GetImagesAndData(training_set);
+
+test_names = dir('test_set');
+test_names = {test_names.name};
+test_names = test_names(~strncmp(test_names,'.',1));
+test_names = unique(cellfun(@(x) x(1:end-4), test_names, 'UniformOutput', false));
+for i = 1:length(test_names)
+    test_names{i} = strcat('test_set/', test_names{i});
 end
 
-% Select a set of images from the test files
-test_data = GetImagesAndData(randsample(test_set, 50));
+training_names = dir('training_set');
+training_names = {training_names.name};
+training_names = training_names(~strncmp(training_names,'.',1));
+training_names = unique(cellfun(@(x) x(1:end-4), training_names, 'UniformOutput', false));
+for i = 1:length(training_names)
+    training_names{i} = strcat('training_set/', training_names{i});
+end
 
-% Segment the images for the training files
-training_data = GetImagesAndData(training_set);
+test_data = GetImagesAndData(test_names);
+training_data = GetImagesAndData(training_names);
 
 %% Generate Training Data and Test Data
 disp('Generating Training Data');

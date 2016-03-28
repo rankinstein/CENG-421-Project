@@ -1,5 +1,12 @@
 function [ decision_boundary, V ] = FisherDiscriminant( features_vector1, features_vector2, str)
     % Use Fisher Discriminant Analysis to reduce dimensions between empty and occupied
+    % classes
+    % Inputs:
+    %   features_vector1 - the feature vectors of the occupied class
+    %                       each feature vector is a row.
+    %   features_vector2 - the feature vector of the empty class
+    %                       each feature vector is a row.
+
     % Construct Sb, the scatter matrix for the distance between means
     Sb = (mean(features_vector2) - mean(features_vector1))'*(mean(features_vector2) - mean(features_vector1));
     % Construct Sw, the scatter matrix for the within covariances
@@ -10,11 +17,13 @@ function [ decision_boundary, V ] = FisherDiscriminant( features_vector1, featur
     % inverse. V becomes the vector to project all the data on to.
     [V, ~] = eigs(pinv(Sw)*Sb,1);
 
-    % correct V being calculated in the opposite direction
+    % It was found that the direction of the vector V is sometimes reversed
+    % even for the exact same input. This little hack corrects the inconsistency.
     if sum(V) > 0
         V = -1 * V;
     end
 
+    %% Find the histograms of the projected feature vectors
     % Project the empty and occupied data sets on the FDA vector V.
     p_empty = features_vector1*V;
     p_occupied = features_vector2*V;
@@ -24,13 +33,15 @@ function [ decision_boundary, V ] = FisherDiscriminant( features_vector1, featur
     histogram(p_occupied);
     histogram(p_empty);
 
-    % Fit a gaussian distribution or the empty and occupied data
+    %% Determine the decision boundary
+    % Fit a gaussian distribution to the empty and occupied data sets
     h_oc = fitdist(p_occupied,'Normal');
     h_em = fitdist(p_empty,'Normal');
 
-    % decision boundary where the two distributions are equal
+    % choose the decision boundary where the two distributions are equal
     decision_boundary = fzero(@(x) normpdf(x, h_oc.mu, h_oc.sigma) - normpdf(x, h_em.mu, h_em.sigma), (h_oc.mu+h_em.mu)/2);
 
+    %% Plot the decision boundary on the histograms and label the graph
     % display the decision boundary
     x=[decision_boundary,decision_boundary];
     y=ylim;
