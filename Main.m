@@ -10,7 +10,7 @@ close all;
 %add relevant file paths
 addpath(genpath('File Extraction'),'./Processing', './Local Phase Quantization', './Local Binary Pattern');
 
-%% Open and separate image and metadata files
+%% Database Integration: Open and separate image and metadata files
 % %This section is commented out for the puposes of submitting a sample of
 % % the image database. This commented-out code walks through the 4.6gb
 % % database and selects a random sample of test and training images/metadata
@@ -24,6 +24,7 @@ addpath(genpath('File Extraction'),'./Processing', './Local Phase Quantization',
 % % Segment the images for the training files
 % training_data = GetImagesAndData(training_set);
 
+%% Image set integration: Open the files contained in test_set and training_set
 test_names = dir('test_set');
 test_names = {test_names.name};
 test_names = test_names(~strncmp(test_names,'.',1));
@@ -104,8 +105,7 @@ end
 
 %% Evaluate the Local Binary Pattern and Local Phase Quantization Descriptors
 disp('Evaluating LBP and LPQ Test Vectors');
-c_mat_LBP = Evaluate(LBP_test_features_empty, LBP_test_features_occupied, LBP_V, LBP_db, 'LBP')
-c_mat_LPQ = Evaluate(LPQ_test_features_empty, LPQ_test_features_occupied, LPQ_V, LPQ_db, 'LPQ')
-
+c_mat_LBP = Evaluate(LBP_test_features_empty, LBP_test_features_occupied, LBP_V, LBP_db, 'LBP');
+c_mat_LPQ = Evaluate(LPQ_test_features_empty, LPQ_test_features_occupied, LPQ_V, LPQ_db, 'LPQ');
 
 

@@ -34,7 +34,7 @@ num_spaces = size(s,1);
 R = @(deg) [cosd(deg) -sind(deg); sind(deg) cosd(deg)]; % 2D rotation matrix
 
 for k = 1:num_spaces
-    plot(s(k,3),s(k,4),'b+');
+    %plot(s(k,3),s(k,4),'b+');
     C = s(k,3:4);
     W = s(k,5)/2;
     H = s(k,6)/2;
@@ -44,22 +44,25 @@ for k = 1:num_spaces
     P(4,:) = [-W -H];
     Rs = (R(s(k,7))*P')';
     P = [Rs(:,1)+C(1) Rs(:,2)+C(2)];
-    if mod(k,3) == 0
-        plot(P(1,1),P(1,2),'g+');
-        plot(P(2,1),P(2,2),'g+');
-        plot(P(3,1),P(3,2),'g+');
-        plot(P(4,1),P(4,2),'g+');
-    elseif mod(k,3) == 1
-        plot(P(1,1),P(1,2),'r+');
-        plot(P(2,1),P(2,2),'r+');
-        plot(P(3,1),P(3,2),'r+');
-        plot(P(4,1),P(4,2),'r+');
-    else
-        plot(P(1,1),P(1,2),'c+');
-        plot(P(2,1),P(2,2),'c+');
-        plot(P(3,1),P(3,2),'c+');
-        plot(P(4,1),P(4,2),'c+');   
-    end
+    pl = plot([P(1,1) P(2,1) P(4,1) P(3,1) P(1,1)],[P(1,2) P(2,2) P(4,2) P(3,2) P(1,2)],'g-','LineWidth',2);
+    
+%     
+%     if mod(k,3) == 0
+%         plot(P(1,1),P(1,2),'g+');
+%         plot(P(2,1),P(2,2),'g+');
+%         plot(P(3,1),P(3,2),'g+');
+%         plot(P(4,1),P(4,2),'g+');
+%     elseif mod(k,3) == 1
+%         plot(P(1,1),P(1,2),'r+');
+%         plot(P(2,1),P(2,2),'r+');
+%         plot(P(3,1),P(3,2),'r+');
+%         plot(P(4,1),P(4,2),'r+');
+%     else
+%         plot(P(1,1),P(1,2),'c+');
+%         plot(P(2,1),P(2,2),'c+');
+%         plot(P(3,1),P(3,2),'c+');
+%         plot(P(4,1),P(4,2),'c+');   
+%     end
 end
 
 %% Example of space segmentation for space k
