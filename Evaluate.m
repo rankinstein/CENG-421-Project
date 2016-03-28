@@ -22,23 +22,23 @@ function confusion_matrix = Evaluate( feature_vector1,feature_vector2, p_vector,
 
    if h_oc.mu > h_em.mu
         % Type 1 Error: False Positives - Empty when classified as occupied
-        FP = sum(p_empty > decision_boundary)/length(p_empty)*100;
+        FP = sum(p_empty > decision_boundary);
 
         % Type 2 Error: False Negatives - Occupied when classified as empty
-        FN = sum(p_occupied < decision_boundary)/length(p_empty)*100;
+        FN = sum(p_occupied < decision_boundary);
     else
         % Type 1 Error: False Positives - Empty when classified as occupied
-        FP = sum(p_empty < decision_boundary)/length(p_empty)*100;
+        FP = sum(p_empty < decision_boundary);
 
         % Type 2 Error: False Negatives - Occupied when classified as empty
-        FN = sum(p_occupied > decision_boundary)/length(p_occupied)*100;  
+        FN = sum(p_occupied > decision_boundary);  
     end
-    TP = sum(p_occupied < decision_boundary)/length(p_occupied)*100;
-    TN = sum(p_empty > decision_boundary)/length(p_empty)*100;
+    TP = sum(p_occupied < decision_boundary);
+    TN = sum(p_empty > decision_boundary);
 
     
     Overall_Error = (FP + FN)/ (TP + TN + FP + FN) * 100;
-    str1 = sprintf('%s Test Data TP Error: %.1f%%, FP Error: %.1f%%, Overall Error: %.2f%%', str, TP, FP, Overall_Error);
+    str1 = sprintf('%s Test Overall Error: %.2f%%', str, Overall_Error);
     title(str1);
 
     c = [TP FN; FP TN];

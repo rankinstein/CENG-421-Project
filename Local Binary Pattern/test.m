@@ -1,7 +1,7 @@
 close all
 
 load('camera256.mat');
-load('boat512.mat');
+
 %convert image to grayscale
 %create neighbourhood sliding window nlfilter or im2col
 camera_rotated = imrotate(camera256,90);

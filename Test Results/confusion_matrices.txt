@@ -1,16 +1,34 @@
-Local Binary Pattern
+c_mat_LBP = 
 
-                occupied    empty 
-                ________    ______
+                occupied    empty
+                ________    _____
 
-    occupied    98.428      1.5725
-    empty       3.1599       96.84
+    occupied    2316          37 
+    empty         68        2084 
 
 
-Local Phase Quantization
+c_mat_LPQ = 
 
-                occupied    empty 
-                ________    ______
+                occupied    empty
+                ________    _____
 
-    occupied    98.343      1.6575
-    empty       5.6691      94.331
+    occupied    2314          39 
+    empty        122        2030 
+
+40k Spots
+c_mat_LBP = 
+
+                occupied    empty
+                ________    _____
+
+    occupied    21192         470
+    empty         696       23887
+
+
+c_mat_LPQ = 
+
+                occupied    empty
+                ________    _____
+
+    occupied    21314         348
+    empty        1208       23375

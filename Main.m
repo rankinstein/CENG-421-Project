@@ -6,7 +6,6 @@
 % Note all the test images used are from a open source parking lot image
 % database.
 close all;
-clear all;
 
 %add relevant file paths
 addpath(genpath('File Extraction'),'./Processing', './Local Phase Quantization', './Local Binary Pattern');
@@ -17,7 +16,7 @@ if ~exist('file_set','var')
 end
 
 % Select a set of images from the test files
-test_data = GetImagesAndData(randsample(test_set, 50));
+test_data = GetImagesAndData(randsample(test_set, 100));
 
 % Segment the images for the training files
 training_data = GetImagesAndData(training_set);
